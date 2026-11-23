@@ -138,7 +138,7 @@ function reveal() {
   draw();el("report").scrollIntoView({block:"start"});
 }
 
-for(const action of ["buy","watch","scan","sell","hold"])el(action).onclick=e=>{if(e.detail<=1)void commit(action);};
+for(const action of ["buy","watch","scan","sell","hold"])el(action).onclick=()=>void commit(action);
 el("reveal").onclick=reveal;
 el("reset").onclick=()=>{if(report && !busy){confirmState=progress;el("confirm").returnValue="cancel";el("confirm").showModal();}};
 el("confirm").addEventListener("close",()=>{if(el("confirm").returnValue==="clear")void commit("reset",confirmState);});

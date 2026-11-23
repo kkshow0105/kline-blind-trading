@@ -11,7 +11,9 @@ const browser=process.env.KLINE_BROWSER;
 if(!browser)throw new Error("Set KLINE_BROWSER to an installed Edge or Chrome executable.");
 const profile=await mkdtemp(join(tmpdir(),"kline-browser-"));
 const mount="/kline-blind-trading/";
-let release="1.0.0";
+const {version: baseRelease}=JSON.parse(await readFile(new URL("../docs/release.json",import.meta.url)));
+const nextRelease=baseRelease.replace(/\d+$/,patch=>String(Number(patch)+1));
+let release=baseRelease;
 const types={html:"text/html",mjs:"text/javascript",js:"text/javascript",css:"text/css",
   png:"image/png",json:"application/json",webmanifest:"application/manifest+json"};
 const server=createServer(async(req,res)=>{
@@ -22,7 +24,7 @@ const server=createServer(async(req,res)=>{
     const content=await readFile(new URL("../docs/"+name,import.meta.url));
     res.setHeader("Content-Type",types[name.split(".").at(-1)]??"application/octet-stream");
     res.setHeader("Cache-Control",name==="release.json" ? "max-age=86400" : "no-cache");
-    res.end(["release.json","sw.js","pwa.mjs"].includes(name) ? content.toString().replaceAll("1.0.0",release) : content);
+    res.end(["release.json","sw.js","pwa.mjs"].includes(name) ? content.toString().replaceAll(baseRelease,release) : content);
   }catch{res.writeHead(404).end();}
 });
 await new Promise(resolve=>server.listen(0,"127.0.0.1",resolve));
@@ -123,11 +125,52 @@ try{
   await ready(el("chart")+".toDataURL()!=="+JSON.stringify(panned));
   await touch("touchStart",[[104,y,1]]);await touch("touchEnd",[]);
   assert.equal(await txt("chart-end"),"已揭示至 2018-01-02");
-  await step("watch",2);await step("buy",3);
+  for(const id of ["buy","watch","sell","hold","scan"]){
+    assert.equal(await js("getComputedStyle("+el(id)+").touchAction"),"manipulation");
+  }
+  assert.equal(await js("getComputedStyle(document.body).touchAction"),"auto");
+  assert.equal(await js("getComputedStyle("+el("chart")+").touchAction"),"none");
+  assert.equal(await js("document.querySelector('meta[name=viewport]').content.includes('user-scalable=no')"),false);
+  const initialScale=await js("visualViewport.scale");
+  await js(`window.zoomTrace=[visualViewport.scale];
+    visualViewport.addEventListener("resize",()=>zoomTrace.push(visualViewport.scale));`);
+  for(let i=0;i<10;i++){
+    const point=await js(`(()=>{
+      const b=document.getElementById("watch").getBoundingClientRect();
+      return [Math.round(b.x+b.width/2),Math.round(b.y+b.height/2),1];
+    })()`);
+    await touch("touchStart",[point]);await touch("touchEnd",[]);
+    await ready(el("step")+".textContent==="+JSON.stringify((i+2)+" / 243"));
+  }
+  assert.ok((await js("zoomTrace")).every(scale=>scale===initialScale));
+  assert.equal(await js("visualViewport.scale"),initialScale);
+  const readStored=()=>js(`(async()=>{
+    const source=await (await fetch("./data/sample.json")).json();
+    const {readProgress}=await import("./storage.mjs");
+    return readProgress(new URL("./",location.href).pathname+"|"+source.id);
+  })()`);
+  assert.deepEqual(await readStored(),{rev:10,log:Array(10).fill("watch")});
+  const rapidDay=await txt("day");
+  await reload();
+  await ready(el("step")+".textContent==='11 / 243'");
+  assert.equal(await txt("day"),rapidDay);
+  assert.deepEqual(await readStored(),{rev:10,log:Array(10).fill("watch")});
+  // The second click of a fast sequence is legitimate once the prior save finishes.
+  // A dispatched event during the same pending save must still be ignored.
+  assert.equal(await js(`(()=>{
+    const b=document.getElementById("watch");
+    b.dispatchEvent(new MouseEvent("click",{detail:2,bubbles:true}));
+    const locked=b.disabled;
+    b.dispatchEvent(new MouseEvent("click",{detail:3,bubbles:true}));
+    return locked;
+  })()`),true);
+  await ready(el("step")+".textContent==='12 / 243'");
+  assert.deepEqual(await readStored(),{rev:11,log:Array(11).fill("watch")});
+  await step("buy",13);
   assert.equal(await js(el("scan")+".checkVisibility()"),false);
-  await step("hold",4);await step("sell",5);
+  await step("hold",14);await step("sell",15);
   await click("scan");
-  await ready("Number(document.getElementById('step').textContent.split('/')[0])>5");
+  await ready("Number(document.getElementById('step').textContent.split('/')[0])>15");
   const saved=await txt("day");
   await cdp("Network.emulateNetworkConditions",{offline:true,latency:0,downloadThroughput:-1,uploadThroughput:-1});
   await reload();
@@ -135,12 +178,12 @@ try{
   const dayIndex=Number((await txt("step")).split("/")[0]);
   await step("buy",dayIndex+1);await step("sell",dayIndex+2);
   const offlineSaved=await txt("day");
+  release=nextRelease;
   await cdp("Network.emulateNetworkConditions",{offline:false,latency:0,downloadThroughput:-1,uploadThroughput:-1});
-  release="1.0.1";
   await js("window.dispatchEvent(new Event('online'))");
-  await ready(el("update-label")+".textContent.includes('1.0.1')");
+  await ready(el("update-label")+".textContent.includes("+JSON.stringify(nextRelease)+")");
   await click("update");
-  await ready(el("version")+".textContent==='K线盲测 v1.0.1'");
+  await ready(el("version")+".textContent==="+JSON.stringify("K线盲测 v"+nextRelease));
   assert.equal(await txt("day"),offlineSaved);
   await cdp("Network.emulateNetworkConditions",{offline:true,latency:0,downloadThroughput:-1,uploadThroughput:-1});
   await js(`(async()=>{
@@ -184,7 +227,7 @@ try{
   await ready(el("step")+".textContent==='1 / 243'");
   await step("buy",2);
   assert.deepEqual(errors,[]);
-  console.log("PASS: Edge installability, five mobile layouts, touch pan/pinch/tap, 243-day flow, offline reload and trade, v1.0.1 update with progress, share PNG, reset/cancel");
+  console.log("PASS: 10 rapid native taps, exact saved log and refresh, click-detail and pending-save lock, Edge installability, five mobile layouts, touch pan/pinch/tap, 243-day flow, offline reload and trade, version update with progress, share PNG, reset/cancel");
 }finally{
   socket?.close();
   processHandle.kill();

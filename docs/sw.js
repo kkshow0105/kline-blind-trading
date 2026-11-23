@@ -1,4 +1,4 @@
-const VERSION="1.0.0";
+const VERSION="1.0.1";
 const scope=new URL(self.registration.scope);
 const prefix="kline-blind:"+scope.pathname+":";
 const cacheName=prefix+VERSION;

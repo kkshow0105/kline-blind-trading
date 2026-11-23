@@ -1,4 +1,4 @@
-export const VERSION="1.0.0";
+export const VERSION="1.0.1";
 const THROTTLE=60_000;
 const isNewer=(a,b)=>{
   if(!/^\d+\.\d+\.\d+$/.test(a))return false;
