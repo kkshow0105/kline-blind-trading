@@ -1,0 +1,6 @@
+node_modules/
+.qa/
+*.log
+*盲测进度*.json
+progress.json
+progress.key

@@ -1,0 +1,15 @@
+{
+  "name":"K线盲测",
+  "short_name":"K线盲测",
+  "id":"./",
+  "start_url":"./",
+  "scope":"./",
+  "display":"standalone",
+  "lang":"zh-CN",
+  "theme_color":"#10151b",
+  "background_color":"#10151b",
+  "icons":[
+    {"src":"./icons/icon-192.png","sizes":"192x192","type":"image/png","purpose":"any"},
+    {"src":"./icons/icon-512.png","sizes":"512x512","type":"image/png","purpose":"any maskable"}
+  ]
+}

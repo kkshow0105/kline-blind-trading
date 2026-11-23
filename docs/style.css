@@ -1,0 +1,50 @@
+:root{color-scheme:dark;--page:#10151b;--panel:#171e26;--line:#343e49;--ink:#edf2f7;--muted:#aebbc7;--gold:#f6c777;--up:#ff7880;--down:#5ad5a6;font:15px/1.48 "Microsoft YaHei UI","PingFang SC",system-ui,sans-serif}
+*{box-sizing:border-box}body{margin:0;background:var(--page);color:var(--ink)}[hidden]{display:none!important}
+main{max-width:1450px;margin:auto;padding:max(20px,env(safe-area-inset-top)) max(20px,env(safe-area-inset-right)) max(20px,env(safe-area-inset-bottom)) max(20px,env(safe-area-inset-left))}
+h1,h2,h3,p,dl,dd{margin:0}h1{font-size:26px;letter-spacing:.03em}h2{font-size:19px}h3{font-size:16px;margin:17px 0 6px}
+button,.button{font:inherit;font-weight:620;color:inherit;background:#242e39;border:1px solid #43505e;padding:7px 12px;border-radius:6px;cursor:pointer;text-decoration:none;line-height:1.3}
+button:hover,.button:hover{background:#303e4b}button:disabled{opacity:.55;cursor:default}button:focus-visible,a:focus-visible,summary:focus-visible{outline:2px solid #a2e0ed;outline-offset:3px}
+.primary{background:var(--gold);color:#261d0e;border-color:var(--gold)}.primary:hover{background:#ffdb96}.danger{background:#352b31;border-color:#775057;color:#ffd0d2}
+.muted,#instrument,.chart-footer,footer{color:var(--muted)}.up{color:var(--up)}.down{color:var(--down)}
+.masthead,.result-head,.decision-heading,.chart-tools,.chart-footer,.account,footer,.update{display:flex;align-items:center;justify-content:space-between;gap:8px}
+.masthead{margin-bottom:13px}.masthead p{font-size:13px}.workspace{display:grid;grid-template-columns:minmax(0,1fr) 260px;gap:12px;align-items:start}
+.chart-panel,.controls,.result,.update{background:var(--panel);border:1px solid var(--line);border-radius:8px;min-width:0}
+.chart-tools{padding:7px 11px}.tool-buttons{display:flex;gap:4px}.tool-buttons button{min-width:34px;padding:5px;font-size:12px}
+.quotes{display:grid;grid-template-columns:repeat(7,minmax(0,auto));gap:6px 10px;padding:7px 11px;border-top:1px solid var(--line);font-size:12px;font-variant-numeric:tabular-nums}
+.quotes dt{color:var(--muted)}.quotes dd{white-space:nowrap}.ma{display:flex;flex-wrap:wrap;gap:3px 12px;padding:2px 11px;font-size:12px;font-variant-numeric:tabular-nums}
+.ma span:nth-child(1){color:#f4c573}.ma span:nth-child(2){color:#7ed3e8}.ma span:nth-child(3){color:#c4a1ed}
+canvas{display:block;width:100%;height:clamp(340px,56vh,660px);touch-action:none;user-select:none}
+.chart-footer{padding:5px 11px;border-top:1px solid var(--line);font-size:12px}
+.controls{padding:12px}.decision-heading strong{display:block;font:650 20px/1.4 ui-monospace,Consolas,monospace}.decision-heading span,#hint{font-size:12px;color:var(--muted)}
+progress{width:100%;height:7px;accent-color:var(--gold);margin:5px 0 7px}.account{border-top:1px solid var(--line);padding:8px 0}.account strong{font-size:14px}
+#position-detail{font-size:12px;margin-bottom:9px}.decisions{display:grid;gap:7px;grid-template-columns:1fr 1fr}.decisions button{min-height:44px}
+.candidate,.full{grid-column:1/-1;width:100%}.candidate{color:#b9c7d3}
+.status{margin:8px 0;color:#c6d7e4;font-size:13px}.status:empty{display:none}.update{margin-bottom:10px;padding:8px 12px}
+.result{margin:12px 0;padding:16px}.result-head{align-items:flex-start;flex-wrap:wrap}.score-block{padding:14px 0 18px;border-bottom:1px solid var(--line)}
+#score{font:750 clamp(46px,9vw,72px)/1.07 ui-monospace,Consolas,monospace;letter-spacing:-.06em}#score-caption{color:var(--muted);margin:8px 0 12px}
+.metrics{display:grid;grid-template-columns:repeat(auto-fit,minmax(132px,1fr));gap:7px;margin-top:12px}
+.metrics div,.trade{border:1px solid var(--line);border-radius:5px;padding:7px 10px;background:#1a232d;min-width:0}
+.metrics dt,.trade dt{font-size:12px;color:var(--muted)}.metrics dd,.trade dd{font-variant-numeric:tabular-nums}
+.trades{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,300px),1fr));gap:8px;margin:8px 0}
+.trade header{display:flex;justify-content:space-between;align-items:center;gap:7px;margin-bottom:6px}
+.trade dl{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:5px 12px}.trade dd{overflow-wrap:anywhere}
+details{margin-top:10px}summary{cursor:pointer;color:#a3daf1}.candidates{padding-inline-start:20px}.candidates li{margin:4px 0}#trade-detail{color:var(--gold);padding:5px 10px;font-size:12px}
+footer{margin-top:12px;font-size:12px;flex-wrap:wrap}dialog{border:1px solid #53606d;border-radius:9px;background:var(--panel);color:inherit;padding:16px;max-width:min(480px,calc(100% - 26px));max-height:calc(100% - 26px);overflow:auto}
+dialog::backdrop{background:#000a}dialog p{margin:9px 0}.dialog-buttons{display:flex;justify-content:flex-end;gap:8px;flex-wrap:wrap;margin-top:12px}#share-preview{display:block;width:100%;max-width:335px;margin-top:8px;border-radius:5px}
+@media(max-width:740px){
+ main{padding:max(9px,env(safe-area-inset-top)) max(8px,env(safe-area-inset-right)) max(10px,env(safe-area-inset-bottom)) max(8px,env(safe-area-inset-left))}
+ h1{font-size:21px}.masthead{margin-bottom:7px}.masthead p{font-size:12px}.workspace{grid-template-columns:minmax(0,1fr);gap:7px}
+ .chart-tools{padding:5px 7px}.chart-tools strong{font-size:13px}.tool-buttons button{min-height:32px}
+ .quotes{padding:5px 7px;grid-template-columns:repeat(4,minmax(0,1fr));gap:2px 6px;font-size:11px}.quotes div:first-child{grid-column:span 2}
+ .ma{padding:2px 7px;gap:2px 7px;font-size:11px}canvas{height:clamp(235px,44svh,490px)}.chart-footer{font-size:11px;padding:4px 7px}
+ .controls{padding:8px 9px}.decision-heading strong{font-size:17px}.account{padding:4px 0}.decisions button{min-height:46px}.decisions .candidate{min-height:34px}
+ .result{padding:11px}.result-head button{font-size:12px}.metrics{grid-template-columns:repeat(2,minmax(0,1fr))}.trade{padding:6px 8px}
+}
+@media(orientation:landscape) and (max-height:550px) and (min-width:600px){
+ .workspace{grid-template-columns:minmax(0,1fr) 205px}canvas{height:58svh;min-height:195px}
+}
+@media(orientation:portrait) and (max-width:740px){
+ .active main{padding-bottom:calc(var(--dock,150px) + env(safe-area-inset-bottom) + 15px)}
+ .active .controls{position:fixed;z-index:2;left:max(8px,env(safe-area-inset-left));right:max(8px,env(safe-area-inset-right));bottom:max(5px,env(safe-area-inset-bottom));background:#171e26}
+ .active canvas{height:clamp(140px,calc(100svh - var(--dock,150px) - 250px - env(safe-area-inset-bottom)),560px)}
+}
